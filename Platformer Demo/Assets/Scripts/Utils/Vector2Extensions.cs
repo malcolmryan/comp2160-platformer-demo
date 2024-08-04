@@ -25,5 +25,13 @@ public static class Vector2Extensions  {
 		return q * v;
 	}
 
+	/**
+	 * Project this vector onto another
+	 */
+	public static Vector2 Project(this Vector2 v, Vector2 onto) {
+		Vector2 u = onto.normalized;
+		return Vector2.Dot(v, u) * u;
+	}
+
 }
 }

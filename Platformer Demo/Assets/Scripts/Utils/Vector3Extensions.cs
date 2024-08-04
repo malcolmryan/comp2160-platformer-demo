@@ -58,6 +58,13 @@ public static class Vector3Extensions  {
 		return Quaternion.AngleAxis(angle, axis) * v;
 	}
 
+	/**
+	 * Project this vector onto another
+	 */
+	public static Vector3 Project(this Vector3 v, Vector3 onto) {
+		Vector3 u = onto.normalized;
+		return Vector3.Dot(v, u) * u;
+	}
 }
 
 }

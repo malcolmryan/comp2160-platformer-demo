@@ -117,15 +117,15 @@ public static class RectExtensions  {
 		}
 	}
 
-	public static void DrawGizmoFilled(this Rect r, Transform t, Color faceColor, Color outlineColor) {
-		Vector3[] verts = new Vector3[4];
-		verts[0] = t.TransformPoint(r.Corner(0));
-		verts[1] = t.TransformPoint(r.Corner(1));
-		verts[2] = t.TransformPoint(r.Corner(2));
-		verts[3] = t.TransformPoint(r.Corner(3));
+	// public static void DrawGizmoFilled(this Rect r, Transform t, Color faceColor, Color outlineColor) {
+	// 	Vector3[] verts = new Vector3[4];
+	// 	verts[0] = t.TransformPoint(r.Corner(0));
+	// 	verts[1] = t.TransformPoint(r.Corner(1));
+	// 	verts[2] = t.TransformPoint(r.Corner(2));
+	// 	verts[3] = t.TransformPoint(r.Corner(3));
 
-		Handles.DrawSolidRectangleWithOutline(verts, faceColor, outlineColor);
-	}
+	// 	Handles.DrawSolidRectangleWithOutline(verts, faceColor, outlineColor);
+	// }
 
 }
 }
