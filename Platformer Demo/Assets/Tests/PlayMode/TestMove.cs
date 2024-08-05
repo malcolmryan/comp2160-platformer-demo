@@ -13,24 +13,14 @@ public class TestMove : InputTestFixture
     private Rigidbody2D rigidbody;
     private ContactTracker2D contacts;
 
-    private Actions actions;
-    private InputAction moveAction;
-
-    private Keyboard keyboard;
-    private Gamepad gamepad;
-
     [UnitySetUp]
     public IEnumerator Setup()
     {
         base.Setup();
+
         // Note: this does not complete until the next frame
         SceneManager.LoadScene("Tests/PlayMode/Scenes/TestFlat");
-        yield return null;
-     
-        keyboard = InputSystem.AddDevice<Keyboard>();
-        gamepad = InputSystem.AddDevice<Gamepad>();
-        Set(gamepad.leftStick, new Vector2(1,0));
-
+        yield return null;    
     }
     
     [TearDown]
@@ -42,23 +32,34 @@ public class TestMove : InputTestFixture
     [UnityTest]
     public IEnumerator TestMove0()
     {
-        Vector3 pos = new Vector3(-4,-4,0);
+        Vector3 pos = new Vector3(0,-4,0);
         GameObject player = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
+        // this needs to go here, not in Setup (why?)
+        Gamepad gamepad = InputSystem.AddDevice<Gamepad>();
+
 
         rigidbody = player.GetComponent<Rigidbody2D>();
         contacts = player.GetComponent<ContactTracker2D>();
 
         // physics needs to run for a frame to register contact
         Assert.AreEqual(0, contacts.NumContacts);
+        Assert.That(rigidbody.position.x, Is.EqualTo(0).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(-4).Within(0.01));
 
         yield return new WaitForFixedUpdate();
 
         Assert.AreEqual(1, contacts.NumContacts);
+        Assert.That(rigidbody.position.x, Is.EqualTo(0).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(-4).Within(0.01));
+        
+        // move to the right for 1s
+        Set(gamepad.leftStick, new Vector2(1,0));
+        InputSystem.Update();
 
+        yield return new WaitForSeconds(1);
 
-        yield return new WaitForSeconds(10);
+        Assert.That(rigidbody.position.x, Is.EqualTo(5).Within(0.01));
+        Assert.That(rigidbody.position.x, Is.EqualTo(-4).Within(0.01));
     }
 
 }
