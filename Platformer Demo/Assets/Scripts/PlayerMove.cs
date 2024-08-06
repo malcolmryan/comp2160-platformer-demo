@@ -1,11 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviour
 {
-    [SerializeField] private float speed = 5;
+    [SerializeField] private float maxSpeed = 5f;
+    [SerializeField] private float speedWindow = 0.6f;
+    [SerializeField] private float acceleration = 50f;
+    [SerializeField] private float gravity = 33f;
+    [SerializeField] private Transform leftRaycast;
+    [SerializeField] private Transform rightRaycast;
+    [SerializeField] private float raycastDist = 0.5f;
+    [SerializeField] private LayerMask floorLayer;
 
     private Actions actions;
     private InputAction moveAction;
@@ -14,6 +22,8 @@ public class PlayerMove : MonoBehaviour
     private Vector2 movementDir;
 
     new private Rigidbody2D rigidbody;
+    private List<ContactPoint2D> contacts;
+    private bool wasOnGround = false;
 
 #region Init
     void Awake()
@@ -23,6 +33,7 @@ public class PlayerMove : MonoBehaviour
         jumpAction = actions.movement.jump;
 
         rigidbody = GetComponent<Rigidbody2D>();
+        contacts = new List<ContactPoint2D>();
     }
 
     void OnEnable()
@@ -47,13 +58,130 @@ public class PlayerMove : MonoBehaviour
 
 #region FixedUpdate
 
-    void FixedUpdate()
+    private bool OnGround()
     {
-        Vector2 v = rigidbody.velocity;
-        v.x = movementDir.x * speed;
-        rigidbody.velocity = v;
+        for (int i = 0; i < contacts.Count; i++)
+        {
+            if (contacts[i].normal.y > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void FixedUpdate()
+    {        
+        rigidbody.GetContacts(contacts);
+        bool onGround = OnGround();
+
+        if (wasOnGround && !onGround) 
+        {
+            onGround = TeleportToGround();
+        }
+
+        float currentSpeed = rigidbody.velocity.x;
+        float targetSpeed = maxSpeed * movementDir.x;
+
+        float dv = targetSpeed - currentSpeed;
+        float sign = Mathf.Sign(dv);
+        dv = Mathf.Abs(dv);
+        float a = Mathf.Min(acceleration, dv/Time.fixedDeltaTime);
+
+        ContactPoint2D? furthestContact = null;
+        float max = Mathf.NegativeInfinity;
+        for (int i = 0; i < contacts.Count; i++)
+        {
+            if (contacts[i].normal.y > 0)
+            {
+                Vector2 v =  contacts[i].point - rigidbody.position;
+                if (v.x * sign > max)
+                {
+                    furthestContact = contacts[i];
+                    max = v.x * sign;
+                }
+            }
+        }
+
+        Vector2 dir = Vector2.right;
+        if (furthestContact != null)
+        {
+            // a vector perpendicular to the normal with dir.x = 1
+            Vector2 n = furthestContact.Value.normal;
+            dir.y = -n.x / n.y;
+        }
+
+        rigidbody.AddForce(a * sign * rigidbody.mass * dir);
+
+        if (!onGround) 
+        {
+            rigidbody.AddForce(gravity * rigidbody.mass * Vector2.down);
+        }
+
+        wasOnGround = onGround;
+    }
+
+    private bool TeleportToGround()
+    {
+        // do raycasts on the left and right
+        RaycastHit2D leftHit = Physics2D.Raycast(leftRaycast.position, 
+            Vector2.down, raycastDist, floorLayer);
+        RaycastHit2D rightHit = Physics2D.Raycast(rightRaycast.position, 
+            Vector2.down, raycastDist, floorLayer);
+        
+        // find the shortest distance
+        float minDist = raycastDist;
+        RaycastHit2D hit; 
+        if (leftHit.collider != null && leftHit.distance < minDist)
+        {
+            hit = leftHit;
+            minDist = leftHit.distance;
+        }
+        if (rightHit.collider != null && rightHit.distance < minDist)
+        {
+            hit = rightHit;
+            minDist = Mathf.Min(minDist, rightHit.distance);
+        }
+
+        if (minDist < raycastDist)
+        {            
+            // teleport to the ground
+            rigidbody.position = rigidbody.position + minDist * Vector2.down;
+            
+            // zero the vertical velocity
+            Vector2 v = rigidbody.velocity;
+            v.y = Mathf.Min(0, v.y);;
+            rigidbody.velocity = v;
+
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+
     }
 
 #endregion FixedUpdate
+
+#region Gizmos
+    void OnDrawGizmos()
+    {
+        if (contacts == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < contacts.Count; i++)
+        {
+            ContactPoint2D c = contacts[i];
+            Gizmos.color = Color.black;
+            Gizmos.DrawSphere(c.point, 0.1f);
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(c.point, c.point + c.normal);
+        }
+    }
+#endregion Gizmos
+
 
 }
