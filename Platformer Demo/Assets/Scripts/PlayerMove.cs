@@ -15,13 +15,17 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float raycastDist = 0.5f;
     [SerializeField] private LayerMask floorLayer;
 
+    // Actions
     private Actions actions;
     private InputAction moveAction;
     private InputAction jumpAction;
 
-    private Vector2 movementDir;
-
+    // Components
     new private Rigidbody2D rigidbody;
+    new private BoxCollider2D collider;
+
+    // State
+    private Vector2 movementDir;
     private List<ContactPoint2D> contacts;
     private bool wasOnGround = false;
 
@@ -33,6 +37,8 @@ public class PlayerMove : MonoBehaviour
         jumpAction = actions.movement.jump;
 
         rigidbody = GetComponent<Rigidbody2D>();
+        collider = GetComponent<BoxCollider2D>();
+
         contacts = new List<ContactPoint2D>();
     }
 
@@ -123,30 +129,15 @@ public class PlayerMove : MonoBehaviour
 
     private bool TeleportToGround()
     {
-        // do raycasts on the left and right
-        RaycastHit2D leftHit = Physics2D.Raycast(leftRaycast.position, 
-            Vector2.down, raycastDist, floorLayer);
-        RaycastHit2D rightHit = Physics2D.Raycast(rightRaycast.position, 
-            Vector2.down, raycastDist, floorLayer);
-        
-        // find the shortest distance
-        float minDist = raycastDist;
-        RaycastHit2D hit; 
-        if (leftHit.collider != null && leftHit.distance < minDist)
-        {
-            hit = leftHit;
-            minDist = leftHit.distance;
-        }
-        if (rightHit.collider != null && rightHit.distance < minDist)
-        {
-            hit = rightHit;
-            minDist = Mathf.Min(minDist, rightHit.distance);
-        }
+        Vector2 centre = rigidbody.position + collider.offset;
+        Vector2 size = collider.size;
 
-        if (minDist < raycastDist)
+        RaycastHit2D hit = Physics2D.BoxCast(centre, size, 0,  Vector2.down, raycastDist, floorLayer);
+
+        if (hit.collider != null)
         {            
             // teleport to the ground
-            rigidbody.position = rigidbody.position + minDist * Vector2.down;
+            rigidbody.position = rigidbody.position + hit.distance * Vector2.down;
             
             // zero the vertical velocity
             Vector2 v = rigidbody.velocity;
