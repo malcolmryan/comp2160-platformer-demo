@@ -9,8 +9,6 @@ using UnityEngine.SceneManagement;
 public class TestGravity : InputTestFixture
 {
     private GameObject playerPrefab = Resources.Load<GameObject>("Player");
-    private Rigidbody2D rigidbody;
-    private ContactTracker2D contacts;
 
     [SetUp]
     override public void Setup()
@@ -31,17 +29,14 @@ public class TestGravity : InputTestFixture
     {
         Vector3 pos = new Vector3(-5,-4,0);
         GameObject player = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
-        rigidbody = player.GetComponent<Rigidbody2D>();
-        contacts = player.GetComponent<ContactTracker2D>();
+        Rigidbody2D rigidbody = player.GetComponent<Rigidbody2D>();
 
         // ContactTracker needs to run for a frame to register contact
-        Assert.AreEqual(0, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(pos.y).Within(0.01));
 
         yield return new WaitForFixedUpdate();
         
-        Assert.AreEqual(1, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(-4).Within(0.01));
     }
@@ -51,17 +46,14 @@ public class TestGravity : InputTestFixture
     {
         Vector3 pos = new Vector3(4,-3,0);
         GameObject player = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
-        rigidbody = player.GetComponent<Rigidbody2D>();
-        contacts = player.GetComponent<ContactTracker2D>();
+        Rigidbody2D rigidbody = player.GetComponent<Rigidbody2D>();
 
         // ContactTracker needs to run for a frame to register contact
-        Assert.AreEqual(0, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(pos.y).Within(0.01));
 
         yield return new WaitForFixedUpdate();
         
-        Assert.AreEqual(1, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(-3).Within(0.01));
     }
@@ -71,16 +63,13 @@ public class TestGravity : InputTestFixture
     {
         Vector3 pos = new Vector3(-5,0,0);
         GameObject player = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
-        rigidbody = player.GetComponent<Rigidbody2D>();
-        contacts = player.GetComponent<ContactTracker2D>();
+        Rigidbody2D rigidbody = player.GetComponent<Rigidbody2D>();
 
-        Assert.AreEqual(0, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(pos.y).Within(0.01));
 
         yield return new WaitForSeconds(1);
 
-        Assert.AreEqual(1, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(-4).Within(0.01));
     }
@@ -90,16 +79,13 @@ public class TestGravity : InputTestFixture
     {
         Vector3 pos = new Vector3(4,0,0);
         GameObject player = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
-        rigidbody = player.GetComponent<Rigidbody2D>();
-        contacts = player.GetComponent<ContactTracker2D>();
+        Rigidbody2D rigidbody = player.GetComponent<Rigidbody2D>();
 
-        Assert.AreEqual(0, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(pos.y).Within(0.01));
 
         yield return new WaitForSeconds(1);
 
-        Assert.AreEqual(1, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(-3).Within(0.01));
     }

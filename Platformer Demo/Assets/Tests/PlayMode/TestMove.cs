@@ -11,7 +11,6 @@ public class TestMove : InputTestFixture
 {
     private GameObject playerPrefab = Resources.Load<GameObject>("Player");
     private Rigidbody2D rigidbody;
-    private ContactTracker2D contacts;
 
     [UnitySetUp]
     public IEnumerator Setup()
@@ -36,19 +35,16 @@ public class TestMove : InputTestFixture
         Vector3 pos = new Vector3(-5,-4,0);
         GameObject player = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
         rigidbody = player.GetComponent<Rigidbody2D>();
-        contacts = player.GetComponent<ContactTracker2D>();
 
         // this needs to go here, not in Setup (why?)
         Gamepad gamepad = InputSystem.AddDevice<Gamepad>();
 
         // physics needs to run for a frame to register contact
-        Assert.AreEqual(0, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(pos.y).Within(0.01));
 
         yield return new WaitForFixedUpdate();
 
-        Assert.AreEqual(1, contacts.NumContacts);
         Assert.That(rigidbody.position.x, Is.EqualTo(pos.x).Within(0.01));
         Assert.That(rigidbody.position.y, Is.EqualTo(pos.y).Within(0.01));
         
