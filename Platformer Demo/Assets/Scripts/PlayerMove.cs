@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -15,6 +16,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float raycastDist = 0.5f;
     [SerializeField] private LayerMask floorLayer;
 
+    // a normal with y-part greater than 0.5f is a 60° incline or flatter
+    private const float MIN_GROUND_NORMAL_Y = 0.5f;
+
     // Actions
     private Actions actions;
     private InputAction moveAction;
@@ -24,9 +28,28 @@ public class PlayerMove : MonoBehaviour
     new private Rigidbody2D rigidbody;
     new private BoxCollider2D collider;
 
+    private struct Contact 
+    {
+        public Vector2 point;
+        public Vector2 normal;
+
+        public Contact(RaycastHit2D hit)
+        {
+            point = hit.point;
+            normal = hit.normal;
+        }
+
+        public Contact(ContactPoint2D cp)
+        {
+            point = cp.point;
+            normal = cp.normal;
+        }
+    }
+
     // State
     private Vector2 movementDir;
-    private List<ContactPoint2D> contacts;
+    private List<Contact> contacts;
+    private List<ContactPoint2D> contactPoints;
     private bool wasOnGround = false;
 
 #region Init
@@ -39,7 +62,8 @@ public class PlayerMove : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
         collider = GetComponent<BoxCollider2D>();
 
-        contacts = new List<ContactPoint2D>();
+        contacts = new List<Contact>();
+        contactPoints = new List<ContactPoint2D>();
     }
 
     void OnEnable()
@@ -64,50 +88,17 @@ public class PlayerMove : MonoBehaviour
 
 #region FixedUpdate
 
-    private bool OnGround()
-    {
-        for (int i = 0; i < contacts.Count; i++)
-        {
-            if (contacts[i].normal.y > 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     void FixedUpdate()
     {        
-        rigidbody.GetContacts(contacts);
-        bool onGround = OnGround();
+        bool onGround = GroundContacts();
 
         if (wasOnGround && !onGround) 
         {
             onGround = TeleportToGround();
         }
 
-        float currentSpeed = rigidbody.velocity.x;
         float targetSpeed = maxSpeed * movementDir.x;
-
-        float dv = targetSpeed - currentSpeed;
-        float sign = Mathf.Sign(dv);
-        dv = Mathf.Abs(dv);
-        float a = Mathf.Min(acceleration, dv/Time.fixedDeltaTime);
-
-        ContactPoint2D? furthestContact = null;
-        float max = Mathf.NegativeInfinity;
-        for (int i = 0; i < contacts.Count; i++)
-        {
-            if (contacts[i].normal.y > 0)
-            {
-                Vector2 v =  contacts[i].point - rigidbody.position;
-                if (v.x * sign > max)
-                {
-                    furthestContact = contacts[i];
-                    max = v.x * sign;
-                }
-            }
-        }
+        Contact? furthestContact = GetFurthestContact(targetSpeed);
 
         Vector2 dir = Vector2.right;
         if (furthestContact != null)
@@ -117,7 +108,7 @@ public class PlayerMove : MonoBehaviour
             dir.y = -n.x / n.y;
         }
 
-        rigidbody.AddForce(a * sign * rigidbody.mass * dir);
+        rigidbody.velocity = targetSpeed * dir;
 
         if (!onGround) 
         {
@@ -125,6 +116,22 @@ public class PlayerMove : MonoBehaviour
         }
 
         wasOnGround = onGround;
+    }
+
+    private bool GroundContacts()
+    {
+        rigidbody.GetContacts(contactPoints);
+        contacts.Clear();
+
+        for (int i = 0; i < contactPoints.Count; i++)
+        {
+            if (contactPoints[i].normal.y > MIN_GROUND_NORMAL_Y)
+            {
+                contacts.Add(new Contact(contactPoints[i]));
+            }
+        }
+
+        return contacts.Count > 0;
     }
 
     private bool TeleportToGround()
@@ -141,8 +148,11 @@ public class PlayerMove : MonoBehaviour
             
             // zero the vertical velocity
             Vector2 v = rigidbody.velocity;
-            v.y = Mathf.Min(0, v.y);;
+            v.y = 0;
             rigidbody.velocity = v;
+
+            // Add the hit point to the contacts list
+            contacts.Add(new Contact(hit));            
 
             return true;
         }
@@ -151,6 +161,28 @@ public class PlayerMove : MonoBehaviour
             return false;
         }
 
+    }
+
+    // dir > 0 => right
+    // dir < 0 => left
+    private Contact? GetFurthestContact(float dir)
+    {
+        Contact? furthestContact = null;
+        float max = Mathf.NegativeInfinity;
+        for (int i = 0; i < contacts.Count; i++)
+        {
+            if (contacts[i].normal.y > 0)
+            {
+                Vector2 v =  contacts[i].point - rigidbody.position;
+                if (v.x * dir > max)
+                {
+                    furthestContact = contacts[i];
+                    max = v.x * dir;
+                }
+            }
+        }
+
+        return furthestContact;
     }
 
 #endregion FixedUpdate
@@ -165,7 +197,7 @@ public class PlayerMove : MonoBehaviour
 
         for (int i = 0; i < contacts.Count; i++)
         {
-            ContactPoint2D c = contacts[i];
+            Contact c = contacts[i];
             Gizmos.color = Color.black;
             Gizmos.DrawSphere(c.point, 0.1f);
             Gizmos.color = Color.green;
