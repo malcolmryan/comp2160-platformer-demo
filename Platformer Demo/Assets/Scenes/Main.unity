@@ -982,11 +982,15 @@ PrefabInstance:
     - target: {fileID: 5426032289496944942, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
       propertyPath: leftRaycast
       value: 
-      objectReference: {fileID: 2057140564}
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426032289496944942, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
+      propertyPath: jumpRiseTime
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5426032289496944942, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
       propertyPath: rightRaycast
       value: 
-      objectReference: {fileID: 1751666090}
+      objectReference: {fileID: 0}
     - target: {fileID: 7589990257204534222, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.21
@@ -1036,7 +1040,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4885508643656058439, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
+    - {fileID: 2126919254393156921, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1316074489785129557, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
@@ -1405,16 +1411,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!4 &1751666090 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7783688156048322564, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
-  m_PrefabInstance: {fileID: 235923904}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2057140564 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4627200494662187111, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
-  m_PrefabInstance: {fileID: 235923904}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
