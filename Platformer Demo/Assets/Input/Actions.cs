@@ -191,6 +191,54 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""shooting"",
+            ""id"": ""4cfc910b-f9a4-4aeb-8133-0a06c4c4b260"",
+            ""actions"": [
+                {
+                    ""name"": ""aim"",
+                    ""type"": ""Value"",
+                    ""id"": ""35e80b6a-b57c-4f83-bae9-46cd62134abb"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1906a4a-57cb-4b24-a2f3-7bb7e505796d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6b1b83e3-4eaa-40a8-bc62-06ed46c449f9"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""086fbfe1-9cdb-483a-b16b-89433d1729eb"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -199,11 +247,16 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_movement = asset.FindActionMap("movement", throwIfNotFound: true);
         m_movement_move = m_movement.FindAction("move", throwIfNotFound: true);
         m_movement_jump = m_movement.FindAction("jump", throwIfNotFound: true);
+        // shooting
+        m_shooting = asset.FindActionMap("shooting", throwIfNotFound: true);
+        m_shooting_aim = m_shooting.FindAction("aim", throwIfNotFound: true);
+        m_shooting_fire = m_shooting.FindAction("fire", throwIfNotFound: true);
     }
 
     ~@Actions()
     {
         UnityEngine.Debug.Assert(!m_movement.enabled, "This will cause a leak and performance issues, Actions.movement.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_shooting.enabled, "This will cause a leak and performance issues, Actions.shooting.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -315,9 +368,68 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         }
     }
     public MovementActions @movement => new MovementActions(this);
+
+    // shooting
+    private readonly InputActionMap m_shooting;
+    private List<IShootingActions> m_ShootingActionsCallbackInterfaces = new List<IShootingActions>();
+    private readonly InputAction m_shooting_aim;
+    private readonly InputAction m_shooting_fire;
+    public struct ShootingActions
+    {
+        private @Actions m_Wrapper;
+        public ShootingActions(@Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @aim => m_Wrapper.m_shooting_aim;
+        public InputAction @fire => m_Wrapper.m_shooting_fire;
+        public InputActionMap Get() { return m_Wrapper.m_shooting; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ShootingActions set) { return set.Get(); }
+        public void AddCallbacks(IShootingActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ShootingActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ShootingActionsCallbackInterfaces.Add(instance);
+            @aim.started += instance.OnAim;
+            @aim.performed += instance.OnAim;
+            @aim.canceled += instance.OnAim;
+            @fire.started += instance.OnFire;
+            @fire.performed += instance.OnFire;
+            @fire.canceled += instance.OnFire;
+        }
+
+        private void UnregisterCallbacks(IShootingActions instance)
+        {
+            @aim.started -= instance.OnAim;
+            @aim.performed -= instance.OnAim;
+            @aim.canceled -= instance.OnAim;
+            @fire.started -= instance.OnFire;
+            @fire.performed -= instance.OnFire;
+            @fire.canceled -= instance.OnFire;
+        }
+
+        public void RemoveCallbacks(IShootingActions instance)
+        {
+            if (m_Wrapper.m_ShootingActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IShootingActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ShootingActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ShootingActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ShootingActions @shooting => new ShootingActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface IShootingActions
+    {
+        void OnAim(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }

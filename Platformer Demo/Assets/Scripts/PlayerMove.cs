@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,7 +18,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float jumpBufferTime = 0.1f;
     [SerializeField] private float jumpRiseTime = 1f;
-
 #endregion 
 
 #region Constants
@@ -37,14 +33,11 @@ public class PlayerMove : MonoBehaviour
 #endregion
 
 #region Components
-    // Components
     new private Rigidbody2D rigidbody;
     new private BoxCollider2D collider;
 #endregion
 
 #region State
-    // State
-
     private struct Contact 
     {
         public Vector2 point;
@@ -108,7 +101,7 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         movementDir = moveAction.ReadValue<Vector2>();
-        if (jumpAction.WasPerformedThisFrame()) {
+        if (jumpAction.WasPressedThisFrame()) {
             lastJumpPressedTime = Time.time;
         }
     }

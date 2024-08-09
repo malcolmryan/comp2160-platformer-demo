@@ -169,6 +169,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "shooting",
+            "id": "4cfc910b-f9a4-4aeb-8133-0a06c4c4b260",
+            "actions": [
+                {
+                    "name": "aim",
+                    "type": "Value",
+                    "id": "35e80b6a-b57c-4f83-bae9-46cd62134abb",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "fire",
+                    "type": "Button",
+                    "id": "a1906a4a-57cb-4b24-a2f3-7bb7e505796d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6b1b83e3-4eaa-40a8-bc62-06ed46c449f9",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "086fbfe1-9cdb-483a-b16b-89433d1729eb",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
