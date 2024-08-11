@@ -9,6 +9,7 @@
  */
 
 using UnityEngine;
+using WordsOnPlay.Utils;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyPatrol : MonoBehaviour
@@ -109,7 +110,35 @@ public class EnemyPatrol : MonoBehaviour
 #region Gizmos
     void OnDrawGizmos()
     {
+        Transform last = null;
 
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        Rect? rect = null;
+        if (collider != null)
+        {
+            Vector2 center = collider.offset;
+            Vector2 size = collider.size;
+            Vector2 min = center - size / 2;
+            rect = new Rect(min, size);
+        }
+
+        for (int i = 0; i < patrol.childCount; i++)
+        {
+            Gizmos.color = (i == nextPatrol ? Color.green : Color.red);
+
+            Transform next = patrol.GetChild(i);
+
+            if (rect != null) 
+            {
+                rect.Value.DrawGizmo(next);
+            }
+
+            if (i > 0)
+            {
+                Gizmos.DrawLine(last.position, next.position);
+            }
+            last = next;
+        }
     }
 #endregion Gizmos
 }
