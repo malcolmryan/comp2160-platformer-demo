@@ -77,6 +77,14 @@ public class Bullet : MonoBehaviour
 
     private void Hit(RaycastHit2D hit) 
     {
+        GameObject o = hit.collider.gameObject;
+
+        if (o.CompareTag(Tags.ENEMY))
+        {
+            EnemyHealth enemy = o.GetComponent<EnemyHealth>();
+            enemy.Hit();
+        }
+
         Destroy(gameObject);
     }
 #endregion
