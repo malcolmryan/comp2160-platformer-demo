@@ -15,9 +15,10 @@ public class EnemyPatrol : MonoBehaviour
 {
 
 #region Parameters
-    [SerializeField] private float speed = 3f;
-    [SerializeField] private float pause = 0.5f;
-    [SerializeField] private Transform patrol;
+    [SerializeField] private float speed = 3f;  // m/s
+    [SerializeField] private float pause = 0.5f; // s
+    [SerializeField] private Transform patrol;    
+    [SerializeField] private EnemyShoot gun;
 #endregion 
 
 #region Components
@@ -55,21 +56,23 @@ public class EnemyPatrol : MonoBehaviour
 #region Update
     void Update()
     {
-        float dt = Time.deltaTime;
-        if (pauseTimer > 0)
+        if (gun.IsFiring)
         {
-            pauseTimer -= dt;
-            dt = -pauseTimer;
+            pauseTimer = pause;
         }
-
-        if (dt > 0) {
-            Move(dt);
+        else if (pauseTimer > 0)
+        {
+            pauseTimer -= Time.deltaTime;
+        }
+        else
+        {
+            Move();
         }
     }
 
-    private void Move(float dt)
+    private void Move()
     {
-        float distanceToMove = speed * dt;
+        float distanceToMove = speed * Time.deltaTime;
 
         // move towards the next patrol point (without overshooting)
         Transform next = patrol.GetChild(nextPatrol);

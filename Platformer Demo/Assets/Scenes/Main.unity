@@ -975,6 +975,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 861348500829854484, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 1316074489785129557, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
       propertyPath: m_Name
       value: Player
@@ -982,6 +986,10 @@ PrefabInstance:
     - target: {fileID: 2711610943425939883, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
       propertyPath: m_Name
       value: Sprite
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327365392058744505, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5426032289496944942, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
       propertyPath: jumpRiseTime
@@ -1036,6 +1044,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28b057bb136724013bc91024bcb455e3, type: 3}
+--- !u!114 &362464248 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4872257845806425169, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
+  m_PrefabInstance: {fileID: 3898391011681687205}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07bc5d04b41d74055ab877dbcbf4b0a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1355,17 +1374,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2150889152128500206, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
+      propertyPath: gun
+      value: 
+      objectReference: {fileID: 362464248}
     - target: {fileID: 3457374246078597263, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4872257845806425169, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
+      propertyPath: cooldown
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872257845806425169, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
+      propertyPath: hitLayer.m_Bits
+      value: 1216
+      objectReference: {fileID: 0}
     - target: {fileID: 6709046455295838384, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
       propertyPath: m_Name
       value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 8882937522056607097, guid: 37d5be7177ec14e7ea9eeaef9ea3401f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

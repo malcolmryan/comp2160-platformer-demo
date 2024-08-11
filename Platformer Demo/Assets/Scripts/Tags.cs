@@ -1,3 +1,5 @@
-public class Tags {
+public class Tags 
+{
+    public const string PLAYER = "Player";
     public const string ENEMY = "Enemy";
 }
