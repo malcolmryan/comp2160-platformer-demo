@@ -20,6 +20,7 @@ public class EnemyShoot : MonoBehaviour
     [SerializeField] private float rotateSpeed = 360; // deg / s
     [SerializeField] private float cooldown = 1; // s
     [SerializeField] private LayerMask hitLayer;
+    [SerializeField] private float bulletRadius = 0.1f; // m
 #endregion 
 
 #region State
@@ -69,7 +70,7 @@ public class EnemyShoot : MonoBehaviour
 
         Vector2 origin = firePosition.position;
         Vector2 dir = transform.right;
-        hit = Physics2D.Raycast(origin, dir, float.PositiveInfinity, hitLayer);
+        hit = Physics2D.CircleCast(origin, bulletRadius, dir, float.PositiveInfinity, hitLayer);
 
         if (hit.collider == null)
         {

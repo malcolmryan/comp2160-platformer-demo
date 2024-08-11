@@ -219,4 +219,4 @@ MonoBehaviour:
     m_Bits: 128
   hitLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 576

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5615479496639187947}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6775516475114434628}
   - component: {fileID: 4872257845806425169}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,7 +83,8 @@ MonoBehaviour:
   cooldown: 1
   hitLayer:
     serializedVersion: 2
-    m_Bits: 1664
+    m_Bits: 704
+  bulletRadius: 0.1
 --- !u!1 &3190511131487436708
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,7 +95,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8821040653351814861}
   - component: {fileID: 2254684413247369749}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +178,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 151230374436954737}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Patrol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +211,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3457374246078597263}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: P1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +246,7 @@ GameObject:
   - component: {fileID: 1331536515364703888}
   - component: {fileID: 2150889152128500206}
   - component: {fileID: 2926284833195949966}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -379,7 +380,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8882937522056607097}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: P0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9114570787884079303}
   - component: {fileID: 164205140956483449}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
