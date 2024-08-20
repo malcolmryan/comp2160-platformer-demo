@@ -51,7 +51,7 @@ public class EnemyShoot : MonoBehaviour
             cooldownTimer -= Time.deltaTime;
         }
 
-        isFiring = CanSeePlayer();
+        isFiring = IsOnScreen() && CanSeePlayer();
         if (isFiring) 
         {
             Shoot();
@@ -59,6 +59,12 @@ public class EnemyShoot : MonoBehaviour
         else {
             Aim();
         }
+    }
+
+    private bool IsOnScreen()
+    {
+        Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
+        return pos.x >= 0 && pos.x <= 1 && pos.y >= 0 && pos.y <= 1;
     }
 
     private bool CanSeePlayer()

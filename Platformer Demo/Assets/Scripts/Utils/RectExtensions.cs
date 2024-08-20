@@ -117,6 +117,36 @@ public static class RectExtensions  {
 		}
 	}
 
+	/// <summary>
+	/// Apply a transform to all four corners of the rectangle.
+	/// 
+	/// Note: this only works in 2D, as the rectangle has no z-coords.
+	/// </summary>
+	/// <param name="r">The rectangle on which this method is called.</param>
+	/// <param name="t">A Transform to be applied to the rectangle.</param>
+	/// <returns></returns>
+
+	public static Rect Transform(this Rect r, Transform t) {
+		return new Rect(
+			t.TransformPoint(r.position),
+			t.TransformVector(r.size));
+	}
+
+	/// <summary>
+	/// Apply an inverse transform to all four corners of the rectangle.
+	/// 
+	/// Note: this only works in 2D, as the rectangle has no z-coords.
+	/// </summary>
+	/// <param name="r">The rectangle on which this method is called.</param>
+	/// <param name="t">A Transform to be applied to the rectangle.</param>
+	/// <returns></returns>
+
+	public static Rect InverseTransform(this Rect r, Transform t) {
+		return new Rect(
+			t.InverseTransformPoint(r.position),
+			t.InverseTransformVector(r.size));
+	}
+
 	// public static void DrawGizmoFilled(this Rect r, Transform t, Color faceColor, Color outlineColor) {
 	// 	Vector3[] verts = new Vector3[4];
 	// 	verts[0] = t.TransformPoint(r.Corner(0));
