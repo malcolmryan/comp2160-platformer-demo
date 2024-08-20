@@ -44,7 +44,7 @@ public class CameraFollow : MonoBehaviour
     private void KeepInBounds()
     {
         // check the camera does not see outside the level boundaries
-        Rect bounds = LevelManager.Instance.Bounds;
+        Rect bounds = LevelManager.Instance.CurrentRoom.Bounds;
 
         Vector2 bottomLeft = Camera.main.ViewportToWorldPoint(Vector2.zero);
         if (!bounds.Contains(bottomLeft)) 

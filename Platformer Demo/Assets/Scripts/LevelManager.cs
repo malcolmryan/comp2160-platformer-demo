@@ -20,16 +20,25 @@ public class LevelManager : MonoBehaviour
 #endregion 
 
 #region Parameters
-    [SerializeField] private Rect bounds;
+    [SerializeField] private Room startingRoom;
+#endregion
+
+#region State
+    private Room currentRoom;
 #endregion 
 
 #region Properties
-    public Rect Bounds {
-        get { return bounds.Transform(transform); }
+    public Room CurrentRoom {
+        get { return currentRoom; }
     }
 #endregion
 
 #region Init & Destroy
+    void Awake()
+    {
+        currentRoom = startingRoom;
+    }
+
     void OnEnable()
     {
         if (instance != null) 
@@ -46,10 +55,10 @@ public class LevelManager : MonoBehaviour
     }
 #endregion Init
 
-#region Public methods
-    public bool IsInside(Vector3 worldPos)
+#region Public Methods
+    public void EnterRoom(Room room)
     {
-        return bounds.Contains(transform.InverseTransformPoint(worldPos));
+        currentRoom = room;
     }
 #endregion
 
@@ -59,11 +68,4 @@ public class LevelManager : MonoBehaviour
     }
 #endregion Update
 
-#region Gizmos
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        bounds.DrawGizmo(transform);
-    }
-#endregion Gizmos
 }
