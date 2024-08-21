@@ -1,12 +1,21 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using WordsOnPlay.Utils;
 
 public class Reticule : MonoBehaviour
 {
+#region Parameters
+    [SerializeField] float sensitivity = 10;
+#endregion
+
 #region Actions
     // Actions
     private Actions actions;
     private InputAction aimAction;
+#endregion
+
+#region State
+    private Vector3 screenPos;
 #endregion
 
 #region Init
@@ -14,6 +23,7 @@ public class Reticule : MonoBehaviour
     {
         actions = new Actions();
         aimAction = actions.shooting.aim;
+        screenPos = Camera.main.WorldToScreenPoint(transform.position);
 
         // detach from player
         transform.parent = null;
@@ -34,10 +44,11 @@ public class Reticule : MonoBehaviour
 #region Update
     void Update()
     {
-        Vector3 pos = aimAction.ReadValue<Vector2>();
-        pos = Camera.main.ScreenToWorldPoint(pos);      
-        pos.z = 0;
-        transform.position = pos;
+        Vector3 delta = aimAction.ReadValue<Vector2>();
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        screenPos += delta * sensitivity;
+        screenPos = Camera.main.pixelRect.Clamp(screenPos);
+        transform.position = Camera.main.ScreenToWorldPoint(screenPos);
     }
 #endregion
 }

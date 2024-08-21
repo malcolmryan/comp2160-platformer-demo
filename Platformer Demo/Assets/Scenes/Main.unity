@@ -387,11 +387,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2101062027931832740, guid: e64170c7bf9094792958032c30dc46e0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7724167842694903756, guid: e64170c7bf9094792958032c30dc46e0, type: 3}
       propertyPath: m_ColliderPaths.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9182218817437184856, guid: e64170c7bf9094792958032c30dc46e0, type: 3}
       propertyPath: m_LocalPosition.x
