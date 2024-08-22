@@ -15,8 +15,9 @@ public class CameraFollow : MonoBehaviour
 
 #region Parameters
     [SerializeField] private Transform player;
-    [SerializeField] private Transform reticule;
+    [SerializeField] private Transform reticle;
     [SerializeField] private float percent = 0.5f;
+    [SerializeField] private AnimationCurve curve;
 #endregion 
 
 #region Init & Destroy
@@ -36,7 +37,14 @@ public class CameraFollow : MonoBehaviour
     {
         if (player != null)
         {
-            transform.position = Vector3.Lerp(player.position, reticule.position, percent);
+            // aim for a point in between the player and reticle
+            Vector3 p = Vector3.Lerp(player.position, reticle.position, percent);
+
+            // move towards p with speed determined by the animation curve
+            Vector3 delta = p - transform.position;
+            float speed = curve.Evaluate(delta.magnitude);
+            transform.position = transform.position + speed * delta * Time.deltaTime;
+
             KeepInBounds();
         }
     }
@@ -64,4 +72,14 @@ public class CameraFollow : MonoBehaviour
     }
 #endregion Update
 
+#region Gizmos
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(player.transform.position, reticle.transform.position);
+        Vector3 p = Vector3.Lerp(player.position, reticle.position, percent);
+        Gizmos.DrawSphere(p, 0.1f);
+    }
+
+#endregion
 }

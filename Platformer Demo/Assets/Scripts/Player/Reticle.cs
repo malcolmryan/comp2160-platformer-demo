@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using WordsOnPlay.Utils;
 
-public class Reticule : MonoBehaviour
+public class Reticle : MonoBehaviour
 {
 #region Parameters
     [SerializeField] float sensitivity = 10;
